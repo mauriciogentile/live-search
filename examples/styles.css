@@ -1,0 +1,41 @@
+#live-search {
+	position: absolute;
+	top: 30%;
+	left: 25%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+ul.searchresultspopup {
+	border:#a4bed4 1px solid;
+	margin-top:0px;
+	padding:0px;
+	z-index:99999!important;
+	position:absolute;
+	background-color:white;
+	max-height:200px;
+	border-collapse:separate;
+	overflow-y:auto;
+	font-family:Tahoma;
+	font-size:11px;
+}
+
+li.searchresultspopupitem {
+	cursor:pointer;
+	padding-left:1px;
+	font-style: normal;
+	text-align:left;
+	list-style:none;
+	line-height:20px;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type: none;
+}
+
+ul.searchresultspopup li:hover {
+	background-color:#ededed;
+}
+
+b {
+	color:blue;
+}
