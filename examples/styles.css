@@ -13,9 +13,9 @@ ul.searchresultspopup {
 	z-index:99999!important;
 	position:absolute;
 	background-color:white;
-	max-height:200px;
+	/*max-height:200px;*/
 	border-collapse:separate;
-	overflow-y:auto;
+	overflow-y:hidden;
 	font-family:Tahoma;
 	font-size:11px;
 }
@@ -32,7 +32,7 @@ li.searchresultspopupitem {
 	list-style-type: none;
 }
 
-ul.searchresultspopup li:hover {
+ul.searchresultspopup li.selected, ul.searchresultspopup li:hover {
 	background-color:#ededed;
 }
 

@@ -6,6 +6,7 @@ var LiveSearch = function(options) {
     var _waitTimeout = options.waitTimeout || 100;
     var _maxResultSize = options.maxResultSize || 20;
     var _searchPopup;
+    var _selectedResult;
 
     var init = function() {
         _searchPopup = $("ul.searchresultspopup");
@@ -13,14 +14,48 @@ var LiveSearch = function(options) {
             _searchPopup = $("<ul style='display:none;' class='searchresultspopup'></ul>");
             $(document.body).append(_searchPopup);
             _searchPopup.mouseleave(function() {
-                that.hide();
+                popup.hide();
             });
         }
         attachHandlers();
     };
 
     var attachHandlers = function() {
-        _targetControl.on("keyup", function(e) {
+        _targetControl.keydown(function(e) {
+            //keydown
+            if (e.keyCode == 40) {
+                if(!_selectedResult) {
+                    _selectedResult = _searchPopup.find("li").first();
+                }
+                else {
+                    if(_selectedResult.next().length) _selectedResult = _selectedResult.next();
+                }
+            }
+            //keyup
+            if (e.keyCode == 38) {
+                if(!_selectedResult) {
+                    _selectedResult = _searchPopup.find("li").last();
+                }
+                else {
+                    if(_selectedResult.prev().length) _selectedResult = _selectedResult.prev();
+                }
+            }
+            if (e.keyCode == 40 || e.keyCode == 38) {
+                _searchPopup.find("li").removeClass("selected");
+                _selectedResult.addClass("selected");
+                _targetControl.val(_selectedResult.text());
+                return false;
+            }
+            if(e.keyCode == 13) {
+                popup.hide();
+                return false;
+            }
+        });
+
+        _targetControl.keyup(function(e) {
+            if(e.keyCode == 13 || e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40) {
+                return false;
+            }
             // Set Timeout
             clearTimeout($.data(_targetControl, 'timer'));
             // Set Search String
@@ -28,18 +63,18 @@ var LiveSearch = function(options) {
             var search_string = vals[vals.length-1].trim();
             // Do Search
             if (search_string.length < 3 || search_string.length > 9) {
-                that.hide();
+                popup.hide();
                 return;
             }
             _targetControl.data('timer', setTimeout(function() {
                 _searchCallback({
                     query: search_string,
                     doneCallback: function(json) {
-                        that.clear();
+                        popup.clear();
                         if(json && json.length === 0) {
                             return;
                         }
-                        that.show();
+                        popup.show();
                         $.each(json, function(index, value) {
                             if(index + 1 > _maxResultSize) {
                                 return false;
@@ -54,7 +89,7 @@ var LiveSearch = function(options) {
                                 }
                                 var last = val.lastIndexOf(search_string);
                                 val = val.substring(0, last) + $(this).attr(_valueProperty);
-                                that.hide();
+                                popup.hide();
                                 _targetControl.focus();
                                 _targetControl.val(val);
                             });
@@ -70,7 +105,7 @@ var LiveSearch = function(options) {
         return line.replace(regex, "<b>$1</b>");
     };
 
-    var that = {
+    var popup = {
         show: function() {
             var offset = _targetControl.offset();
             offset.top += _targetControl.height() + 5;
@@ -83,6 +118,7 @@ var LiveSearch = function(options) {
             _searchPopup.hide();
         },
         clear: function() {
+            _selectedResult = undefined;
             _searchPopup.empty();
         },
         destroy: function() {
@@ -94,7 +130,7 @@ var LiveSearch = function(options) {
 
     init();
 
-    return that;
+    return popup;
 };
 
 (function($) {
