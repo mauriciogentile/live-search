@@ -12,7 +12,7 @@ $(function() {
 	});
 });
 
-//the function tha performs the search
+//the function that performs the search
 var mySearchCallback = function (params) {
 	var result = [];
 
